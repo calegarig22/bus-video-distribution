@@ -53,3 +53,9 @@ tests_integration/        servidor real + cliente real, incluindo TLS
 demo/                     demo no notebook, tela simulada, teste de carga, scan de segurança
 docs/                     arquitetura, API, manuais e troubleshooting
 ```
+
+## Direitos autorais
+
+© 2026 Gustavo Fiedler Calegari. Todos os direitos reservados.
+
+Este código está publicado apenas para avaliação de portfólio. Não é permitido copiar, modificar, distribuir ou usar comercialmente, no todo ou em parte, sem autorização por escrito do autor.
