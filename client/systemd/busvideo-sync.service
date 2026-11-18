@@ -1,0 +1,46 @@
+[Unit]
+Description=Bus Video - sync agent (garage server -> local video)
+# network.target only (never network-online): the agent must not block boot
+# and must run even when Wi-Fi is absent; it simply retries.
+After=network.target systemd-tmpfiles-setup.service
+Wants=network.target
+
+[Service]
+Type=notify
+NotifyAccess=all
+User=busvideo
+Group=busvideo
+WorkingDirectory=/opt/busvideo-player/app
+Environment=BUSVIDEO_CLIENT_ENV=/opt/busvideo-player/config/client.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m busvideo_client.sync
+Restart=always
+RestartSec=5
+WatchdogSec=300
+
+# Low priority: never compete with the player for CPU or SD-card I/O.
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+MemoryMax=200M
+
+# Only if SET_TIME_FROM_SERVER=true in client.env (Pi has no RTC). Grants the
+# capability to run `date -s`; keep commented otherwise.
+#AmbientCapabilities=CAP_SYS_TIME
+#CapabilityBoundingSet=CAP_SYS_TIME
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadWritePaths=/opt/busvideo-player/media /opt/busvideo-player/state /opt/busvideo-player/logs /run/busvideo-player
+
+[Install]
+WantedBy=multi-user.target

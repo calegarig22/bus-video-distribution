@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ product_name }} — Entrar</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+<main class="login-card">
+  <h1>{{ product_name }}</h1>
+  <p class="muted">Gerenciamento de vídeo dos ônibus</p>
+  <form id="login-form" autocomplete="on">
+    <label>Usuário<input name="username" type="text" required autofocus autocomplete="username"></label>
+    <label>Senha<input name="password" type="password" required autocomplete="current-password"></label>
+    <button type="submit" class="btn btn-primary btn-block">ENTRAR</button>
+    <p id="login-error" class="error" hidden></p>
+  </form>
+  <p class="footer muted">{{ company_name }}</p>
+</main>
+<script src="/static/login.js"></script>
+</body>
+</html>

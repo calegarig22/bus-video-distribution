@@ -1,0 +1,3 @@
+[tool.pytest.ini_options]
+testpaths = ["server/tests", "client/tests", "tests_integration"]
+addopts = "-q --import-mode=importlib -p no:warnings"

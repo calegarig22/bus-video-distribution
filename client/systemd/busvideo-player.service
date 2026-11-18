@@ -1,0 +1,39 @@
+[Unit]
+Description=Bus Video - player supervisor (mpv, fullscreen loop)
+# Must start WITHOUT network: playback never depends on Wi-Fi or the server.
+After=systemd-tmpfiles-setup.service local-fs.target
+Wants=systemd-tmpfiles-setup.service
+
+[Service]
+Type=notify
+NotifyAccess=all
+User=busvideo
+Group=busvideo
+SupplementaryGroups=video render input audio
+WorkingDirectory=/opt/busvideo-player/app
+Environment=BUSVIDEO_CLIENT_ENV=/opt/busvideo-player/config/client.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m busvideo_client.supervisor
+Restart=always
+RestartSec=3
+WatchdogSec=60
+
+# Resource policy: the player is the process to preserve under memory pressure.
+MemoryMax=400M
+OOMScoreAdjust=-500
+
+# Hardening. mpv needs /dev/dri and /dev/video* (KMS + V4L2 M2M decoder),
+# so PrivateDevices/DevicePolicy are intentionally left at defaults.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadWritePaths=/opt/busvideo-player/media /opt/busvideo-player/state /opt/busvideo-player/logs /run/busvideo-player
+
+[Install]
+WantedBy=multi-user.target

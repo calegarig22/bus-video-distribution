@@ -1,0 +1,36 @@
+[Unit]
+Description=Bus Video Distribution - garage server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=busvideo-server
+Group=busvideo-server
+WorkingDirectory=/opt/busvideo-server/app
+Environment=BUSVIDEO_SERVER_ENV=/opt/busvideo-server/config/server.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/busvideo-server/venv/bin/python -m busvideo_server.main
+Restart=always
+RestartSec=3
+
+# Binding to port 80 without running as root
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadWritePaths=/opt/busvideo-server/data /opt/busvideo-server/logs
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

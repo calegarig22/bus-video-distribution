@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ product_name }}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-user="{{ user }}" data-role="{{ role }}">
+<header class="topbar">
+  <div class="brand"><span class="logo">▶</span> {{ product_name }}</div>
+  <div class="topbar-right"><span class="muted">{{ user }}{% if role == "admin" %} · administrador{% endif %}</span> <button id="pw-btn" class="btn btn-ghost" type="button">Senha</button> <button id="logout" class="btn btn-ghost">Sair</button></div>
+</header>
+
+<main class="container">
+  <h1 class="page-title">GERENCIAMENTO DE VÍDEO</h1>
+
+  <section class="card" id="password-card" hidden>
+    <h2>Senha de acesso</h2>
+    <p class="muted small" id="pw-help"></p>
+    <form id="pw-form" autocomplete="off">
+      <label id="pw-target-label" hidden>Conta<select id="pw-target"></select></label>
+      <label id="pw-current-label">Senha atual<input id="pw-current" type="password" autocomplete="current-password"></label>
+      <label>Nova senha (mínimo 8 caracteres)<input id="pw-new" type="password" required minlength="8" autocomplete="new-password"></label>
+      <label>Repetir a nova senha<input id="pw-new2" type="password" required minlength="8" autocomplete="new-password"></label>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">SALVAR SENHA</button>
+        <button type="button" id="pw-cancel" class="btn btn-secondary">CANCELAR</button>
+      </div>
+      <p id="pw-error" class="error" hidden></p>
+      <p id="pw-ok" class="ok" hidden></p>
+    </form>
+  </section>
+
+  <section class="card" id="current-card">
+    <h2>Vídeo atual</h2>
+    <div id="current-empty" class="muted" hidden>Nenhum vídeo publicado ainda.</div>
+    <div id="current-info" class="kv" hidden>
+      <div><span class="k">Arquivo</span><span class="v" id="cur-name">—</span></div>
+      <div><span class="k">Versão</span><span class="v" id="cur-version">—</span></div>
+      <div><span class="k">Publicado</span><span class="v" id="cur-date">—</span></div>
+      <div><span class="k">Duração</span><span class="v" id="cur-duration">—</span></div>
+      <div><span class="k">Resolução</span><span class="v" id="cur-res">—</span></div>
+      <div><span class="k">Tamanho</span><span class="v" id="cur-size">—</span></div>
+      <div><span class="k">Status</span><span class="v status-ok">● Publicado</span></div>
+    </div>
+    <details id="preview-details" hidden><summary>Pré-visualizar</summary>
+      <video id="preview" controls preload="none" muted playsinline></video>
+    </details>
+  </section>
+
+  <section class="card" id="upload-card">
+    <h2>Novo vídeo</h2>
+    <p class="muted small">Formato aceito: MP4 (H.264{% if 'aac' in policy.allowed_audio_codecs %}, áudio AAC ou sem áudio{% endif %}), até {{ policy.max_width }}x{{ policy.max_height }}, {{ policy.max_fps|int }} fps, {{ policy.max_size_mb }} MB.</p>
+    <input type="file" id="file-input" accept="video/mp4,.mp4,.m4v,.mov" hidden>
+    <div class="actions">
+      <button id="select-btn" class="btn btn-secondary">SELECIONAR NOVO VÍDEO</button>
+      <button id="upload-btn" class="btn btn-primary" disabled>ENVIAR</button>
+    </div>
+    <div id="selected-file" class="muted small" hidden></div>
+    <div id="progress-wrap" hidden>
+      <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
+      <div id="progress-text" class="small muted">Enviando… 0%</div>
+    </div>
+    <div id="validation" class="validation" hidden>
+      <div class="kv">
+        <div><span class="k">Arquivo</span><span class="v" id="val-name">—</span></div>
+        <div><span class="k">Duração</span><span class="v" id="val-duration">—</span></div>
+        <div><span class="k">Resolução</span><span class="v" id="val-res">—</span></div>
+        <div><span class="k">Codec</span><span class="v" id="val-codec">—</span></div>
+        <div><span class="k">FPS</span><span class="v" id="val-fps">—</span></div>
+        <div><span class="k">Tamanho</span><span class="v" id="val-size">—</span></div>
+        <div><span class="k">Status</span><span class="v" id="val-status">—</span></div>
+      </div>
+      <ul id="val-reasons" class="reasons"></ul>
+      <div class="actions">
+        <button id="publish-btn" class="btn btn-primary btn-large" disabled>PUBLICAR</button>
+      </div>
+    </div>
+    <p id="upload-error" class="error" hidden></p>
+    <p id="publish-ok" class="ok" hidden></p>
+  </section>
+
+  <section class="card">
+    <h2>Dispositivos <span id="devices-count" class="muted small"></span></h2>
+    <div id="devices-empty" class="muted" hidden>Nenhum ônibus se conectou ainda.</div>
+    <div class="table-wrap">
+    <table id="devices-table" class="devices" hidden>
+      <thead><tr><th>Ônibus</th><th>Versão</th><th>Status</th><th>Último contato</th><th>Observação</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div id="devices-more" class="devices-more" hidden>
+      <span id="devices-more-text" class="muted small"></span>
+      <button id="devices-toggle" class="btn btn-secondary btn-small" type="button"></button>
+    </div>
+  </section>
+
+  <p class="footer muted">{{ company_name }} · {{ product_name }}</p>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
